@@ -536,6 +536,7 @@ class COutputGenerator(OutputGenerator):
         # Multiple inclusion protection & C++ wrappers.
         if (genOpts.protectFile and self.genOpts.filename):
             headerSym = '__' + re.sub('\.h', '_h_', os.path.basename(self.genOpts.filename))
+            headerSym = re.sub('\.c', '_c_', headerSym)
             write('#ifndef', headerSym, file=self.outFile)
             write('#define', headerSym, '1', file=self.outFile)
             self.newline()
@@ -620,8 +621,8 @@ class COutputGenerator(OutputGenerator):
                     write(self.cmdBody, end='', file=self.outFile)
                     if (self.genOpts.protectProto):
                         write('#endif', file=self.outFile)
-            if (self.featureExtraProtect != None):
-                write('#endif /*', self.featureExtraProtect, '*/', file=self.outFile)
+                if (self.featureExtraProtect != None):
+                    write('#endif /*', self.featureExtraProtect, '*/', file=self.outFile)
             if (self.genOpts.protectFeature):
                 write('#endif /*', self.featureName, '*/', file=self.outFile)
         # Finish processing in superclass
