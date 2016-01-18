@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 #
 # Copyright (c) 2013-2015 The Khronos Group Inc.
 #
@@ -271,8 +272,8 @@ buildList = [
         filename          = 'GL/glext.h',
         apiname           = 'gl',
         profile           = 'compatibility',
-        versions          = allVersions,
-        emitversions      = gl12andLaterPat,
+        versions          = allVersions,    # 这儿表示OpenGL所有的版本
+        emitversions      = gl12andLaterPat,# 这儿表示OpenGL1.2之后的版本
         defaultExtensions = 'gl',                   # Default extensions for GL
         addExtensions     = None,
         removeExtensions  = None,
@@ -297,6 +298,25 @@ buildList = [
         removeExtensions  = None,
         prefixText        = prefixStrings + glCorearbPlatformStrings,
         genFuncPointers   = True,
+        protectFile       = protectFile,
+        protectFeature    = protectFeature,
+        protectProto      = protectProto,
+        protectProtoStr   = 'GL_GLEXT_PROTOTYPES',
+        apicall           = 'GLAPI ',
+        apientry          = 'APIENTRY ',
+        apientryp         = 'APIENTRYP '),
+        # 这儿是生成.c文件
+        CGeneratorOptions(
+        filename          = 'GL/opengl32.c',
+        apiname           = 'gl',
+        profile           = 'core',
+        versions          = allVersions,
+        emitversions      = allVersions,
+        defaultExtensions = 'glcore',               # Default extensions for GL core profile (only)
+        addExtensions     = glCoreARBPat,
+        removeExtensions  = None,
+        prefixText        = prefixStrings + glCorearbPlatformStrings,
+        genFuncPointers   = False,
         protectFile       = protectFile,
         protectFeature    = protectFeature,
         protectProto      = protectProto,

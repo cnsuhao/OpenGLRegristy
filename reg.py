@@ -1,4 +1,5 @@
 #!/usr/bin/python3 -i
+# coding: utf-8
 #
 # Copyright (c) 2013-2014 The Khronos Group Inc.
 #
@@ -460,6 +461,7 @@ class COutputGenerator(OutputGenerator):
         self.typeBody = ''
         self.enumBody = ''
         self.cmdBody = ''
+        self.functionBody = ''
     #
     # makeCDecls - return C prototype and function pointer typedef for a
     #   command, as a two-element list of strings.
@@ -506,15 +508,30 @@ class COutputGenerator(OutputGenerator):
                     paramdecl += ', '
         else:
             paramdecl += 'void'
-        paramdecl += ");\n";
-        return [ pdecl + paramdecl, tdecl + paramdecl ]
+        # 这个地方可以加一个函数体 proto.text是函数的返回类型
+        funcWithBody = pdecl + paramdecl + ")\n{\n"
+        returnType = noneStr(proto.text)
+        for elem in proto:
+            text = noneStr(elem.text)
+            tail = noneStr(elem.tail)
+            if (elem.tag != 'name'):
+                returnType += text + tail
+
+        if(returnType != 'void '):#proto.text 里面有一个空格，这是一个隐患
+            #for elem in proto:
+            funcWithBody += returnType
+            funcWithBody += ' returnValue;\nreturn returnValue;\n'
+        funcWithBody += "}\n"
+        # 函数体
+        paramdecl += ");\n"
+        return [ pdecl + paramdecl, tdecl + paramdecl , funcWithBody]
     #
     def newline(self):
         write('', file=self.outFile)
     #
     def beginFile(self, genOpts):
         OutputGenerator.beginFile(self, genOpts)
-        # C-specific
+        # C-specific  上面这一行是打开文件
         #
         # Multiple inclusion protection & C++ wrappers.
         if (genOpts.protectFile and self.genOpts.filename):
@@ -573,26 +590,36 @@ class COutputGenerator(OutputGenerator):
         # Actually write the interface to the output file.
         if (self.emit):
             self.newline()
+            #下面这组是写 #ifndef GL_VERSION_1_2 #define GL_VERSION_1_2 1
             if (self.genOpts.protectFeature):
                 write('#ifndef', self.featureName, file=self.outFile)
             write('#define', self.featureName, '1', file=self.outFile)
-            if (self.typeBody != ''):
-                write(self.typeBody, end='', file=self.outFile)
-            #
-            # Don't add additional protection for derived type declarations,
-            # which may be needed by other features later on.
-            if (self.featureExtraProtect != None):
-                write('#ifdef', self.featureExtraProtect, file=self.outFile)
-            if (self.enumBody != ''):
-                write(self.enumBody, end='', file=self.outFile)
-            if (self.genOpts.genFuncPointers and self.cmdPointerBody != ''):
-                write(self.cmdPointerBody, end='', file=self.outFile)
-            if (self.cmdBody != ''):
-                if (self.genOpts.protectProto):
-                    write('#ifdef', self.genOpts.protectProtoStr, file=self.outFile)
-                write(self.cmdBody, end='', file=self.outFile)
-                if (self.genOpts.protectProto):
-                    write('#endif', file=self.outFile)
+
+
+            if ( self.outFile.name[-1] == 'c'):
+                write(self.functionBody, end='', file=self.outFile)
+            else:
+                if (self.typeBody != ''):
+                    write(self.typeBody, end='', file=self.outFile)
+                #
+                # Don't add additional protection for derived type declarations,
+                # which may be needed by other features later on.
+                if (self.featureExtraProtect != None):
+                    write('#ifdef', self.featureExtraProtect, file=self.outFile)
+
+                # enumBody里面存储的是枚举类型的定义
+                if (self.enumBody != ''):
+                    write(self.enumBody, end='', file=self.outFile)
+                # 下面是用typedef定义的函数指针
+                if (self.genOpts.genFuncPointers and self.cmdPointerBody != ''):
+                    write(self.cmdPointerBody, end='', file=self.outFile)
+                # 下面会把函数的定义写入到文件中
+                if (self.cmdBody != ''):
+                    if (self.genOpts.protectProto):
+                        write('#ifdef', self.genOpts.protectProtoStr, file=self.outFile)
+                    write(self.cmdBody, end='', file=self.outFile)
+                    if (self.genOpts.protectProto):
+                        write('#endif', file=self.outFile)
             if (self.featureExtraProtect != None):
                 write('#endif /*', self.featureExtraProtect, '*/', file=self.outFile)
             if (self.genOpts.protectFeature):
@@ -613,7 +640,7 @@ class COutputGenerator(OutputGenerator):
             if (elem.tag == 'apientry'):
                 s += self.genOpts.apientry + noneStr(elem.tail)
             else:
-                s += noneStr(elem.text) + noneStr(elem.tail)
+                s += noneStr(elem.text) + noneStr(elem.tail)# 这儿为什么是一个typedef unsigned int GLenum
         if (len(s) > 0):
             self.typeBody += s + "\n"
     #
@@ -633,11 +660,12 @@ class COutputGenerator(OutputGenerator):
     # Command generation
     def genCmd(self, cmdinfo, name):
         OutputGenerator.genCmd(self, cmdinfo, name)
-        #
+        # 下面这个函数是根据函数名生成函数声明和函数指针
         decls = self.makeCDecls(cmdinfo.elem)
         self.cmdBody += decls[0]
         if (self.genOpts.genFuncPointers):
             self.cmdPointerBody += decls[1]
+        self.functionBody += decls[2]
 
 # Registry - object representing an API registry, loaded from an XML file
 # Members
@@ -939,6 +967,7 @@ class Registry:
                 self.generateFeature(depname, 'type', self.typedict,
                                      self.gen.genType)
         elif (ftype == 'command'):
+            #下面这一行是查找函数的参数，在xml中是用ptype标记的,f是从字典里面查出来的当前函数的定义
             for ptype in f.elem.findall('.//ptype'):
                 depname = ptype.text
                 self.gen.logMsg('diag', '*** Generating required parameter type',
@@ -964,6 +993,7 @@ class Registry:
         #
         # Loop over all features inside all <require> tags.
         # <remove> tags are ignored (handled in pass 1).
+        # 下面是遍历require下的所有元素gl.xml中把每个版本中必需的枚举和函数放到<require></require>中
         for features in interface.findall('require'):
             for t in features.findall('type'):
                 self.generateFeature(t.get('name'), 'type', self.typedict,
@@ -971,7 +1001,11 @@ class Registry:
             for e in features.findall('enum'):
                 self.generateFeature(e.get('name'), 'enum', self.enumdict,
                                      self.gen.genEnum)
+            commandList = features.findall('command')
             for c in features.findall('command'):
+                commandName = c.get('name')
+                if(commandName == 'glBegin'):
+                    write('   commandName', commandName)
                 self.generateFeature(c.get('name'), 'command', self.cmddict,
                                      self.gen.genCmd)
     #
@@ -1000,7 +1034,7 @@ class Registry:
         # Get all matching API versions & add to list of FeatureInfo
         features = []
         apiMatch = False
-        for key in self.apidict:
+        for key in self.apidict: # apidict是各个版本API的字典
             fi = self.apidict[key]
             api = fi.elem.get('api')
             if (api == self.genOpts.apiname):
@@ -1067,7 +1101,7 @@ class Registry:
             # If the extension is to be included, add it to the
             # extension features list.
             if (include):
-                ei.emit = True
+                ei.emit = True # 这儿标记最后的数据是不是往文件中写，true是写
                 features.append(ei)
             else:
                 self.gen.logMsg('diag', '*** NOT including extension',
@@ -1095,7 +1129,10 @@ class Registry:
         #   declarations for required things which haven't already been
         #   generated.
         self.gen.logMsg('diag', '*** PASS 2: GENERATE INTERFACES FOR FEATURES ************************')
+        # 下面这行会写入头文件的宏，声明等信息
         self.gen.beginFile(self.genOpts)
+        #gl.xml中feature定义如下:<feature api="gl" name="GL_VERSION_1_1" number="1.1">
+        featuresLen = len(features)
         for f in features:
             self.gen.logMsg('diag', '*** PASS 2: Generating interface for',
                 f.name)
