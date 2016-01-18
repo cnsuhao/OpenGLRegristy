@@ -752,6 +752,8 @@ class Registry:
     #   fname - name of type / enum / command
     #   dictionary - self.{type|enum|cmd}dict
     def lookupElementInfo(self, fname, dictionary):
+        if(fname == 'glBegin'):
+            t = 6
         key = (fname, self.genOpts.apiname)
         if (key in dictionary):
             # self.gen.logMsg('diag', 'Found API-specific element for feature', fname)
