@@ -290,7 +290,7 @@ buildList = [
     CGeneratorOptions(
         filename          = 'GL/glcorearb.h',
         apiname           = 'gl',
-        profile           = 'core',
+        profile           = 'compatibility',#这儿原来是core，它会把glBegin这些已经抛弃的函数去掉
         versions          = allVersions,
         emitversions      = allVersions,
         defaultExtensions = 'glcore',               # Default extensions for GL core profile (only)
@@ -309,7 +309,7 @@ buildList = [
         CGeneratorOptions(
         filename          = 'GL/opengl32.c',
         apiname           = 'gl',
-        profile           = 'core',
+        profile           = 'compatibility',
         versions          = allVersions,
         emitversions      = allVersions,
         defaultExtensions = 'glcore',               # Default extensions for GL core profile (only)
