@@ -596,3 +596,61 @@ elif (profile):
     p.strip_dirs().sort_stats('time').print_stats(50)
 else:
     genHeaders()
+    #下面开始生成wgl.xml的内容
+    regFilename = 'wgl.xml'
+
+    # Load & parse registry
+    reg = Registry()
+
+    startTimer()
+    tree = etree.parse(regFilename)
+    endTimer('Time to make ElementTree =')
+
+    startTimer()
+    reg.loadElementTree(tree)
+    endTimer('Time to parse ElementTree =')
+
+
+    buildList = [
+            # WGL API + extensions - GL/wgl.h (no function pointers, yet @@@)
+        CGeneratorOptions(
+            filename          = 'GL/wgl.h',
+            apiname           = 'wgl',
+            profile           = None,
+            versions          = allVersions,
+            emitversions      = allVersions,
+            defaultExtensions = 'wgl',                  # Default extensions for WGL
+            addExtensions     = None,
+            removeExtensions  = None,
+            prefixText        = prefixStrings + wglPlatformStrings + genDateCommentString,
+            genFuncPointers   = True,
+            protectFile       = protectFile,
+            protectFeature    = protectFeature,
+            protectProto      = protectProto,
+            protectProtoStr   = 'WGL_WGLEXT_PROTOTYPES',
+            apicall           = '',
+            apientry          = 'WINAPI ',
+            apientryp         = 'WINAPI * '),
+            CGeneratorOptions(
+            filename          = 'GL/wgl.c',
+            apiname           = 'wgl',
+            profile           = None,
+            versions          = allVersions,
+            emitversions      = allVersions,
+            defaultExtensions = 'wgl',                  # Default extensions for WGL
+            addExtensions     = None,
+            removeExtensions  = None,
+            prefixText        = prefixStrings + wglPlatformStrings + genDateCommentString,
+            genFuncPointers   = True,
+            protectFile       = protectFile,
+            protectFeature    = protectFeature,
+            protectProto      = protectProto,
+            protectProtoStr   = 'WGL_WGLEXT_PROTOTYPES',
+            apicall           = 'GLAPI ',
+            apientry          = 'WINAPI ',
+            apientryp         = 'WINAPI * '),
+        # End of list
+        None
+     ]
+
+    genHeaders()
