@@ -502,8 +502,16 @@ class COutputGenerator(OutputGenerator):
         n = len(params)
         paramdecl = ' ('
         if n > 0:
-            for i in range(0,n):
-                paramdecl += ''.join([t for t in params[i].itertext()])
+            for i in range(0,n):#这儿表示一共有n个参数
+                paramdecl += ''.join([t for t in params[i].itertext()]) #防止参数与关键字重复
+                #j = 0
+                #for t in params[i].itertext():
+                #    if (j%2 == 0):
+                #        paramdecl += t
+                #    else:
+                #        paramdecl += ' ' + t + '_'
+                #    j += 1
+                paramdecl += '_'
                 if (i < n - 1):
                     paramdecl += ', '
         else:
@@ -586,20 +594,25 @@ class COutputGenerator(OutputGenerator):
         self.enumBody = ''
         self.cmdPointerBody = ''
         self.cmdBody = ''
+        self.functionBody = ''
     def endFeature(self):
         # C-specific
         # Actually write the interface to the output file.
         if (self.emit):
             self.newline()
-            #下面这组是写 #ifndef GL_VERSION_1_2 #define GL_VERSION_1_2 1
-            if (self.genOpts.protectFeature):
-                write('#ifndef', self.featureName, file=self.outFile)
-            write('#define', self.featureName, '1', file=self.outFile)
 
 
             if ( self.outFile.name[-1] == 'c'):
+                #下面这组是写 #ifndef GL_VERSION_1_2 #define GL_VERSION_1_2 1
+                if (self.genOpts.protectFeature):
+                    write('#ifdef', self.featureName, file=self.outFile)
                 write(self.functionBody, end='', file=self.outFile)
             else:
+
+                #下面这组是写 #ifndef GL_VERSION_1_2 #define GL_VERSION_1_2 1
+                if (self.genOpts.protectFeature):
+                    write('#ifndef', self.featureName, file=self.outFile)
+                write('#define', self.featureName, '1', file=self.outFile)
                 if (self.typeBody != ''):
                     write(self.typeBody, end='', file=self.outFile)
                 #
