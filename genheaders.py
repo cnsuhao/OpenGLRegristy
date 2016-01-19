@@ -303,8 +303,8 @@ buildList = [
         protectProto      = protectProto,
         protectProtoStr   = 'GL_GLEXT_PROTOTYPES',
         apicall           = 'GLAPI ',
-        apientry          = 'GAPIENTRY ',
-        apientryp         = 'GAPIENTRYP '),
+        apientry          = 'APIENTRY ',
+        apientryp         = 'APIENTRYP '),
         # 这儿是生成.c文件
         CGeneratorOptions(
         filename          = 'GL/opengl32.c',
@@ -315,15 +315,15 @@ buildList = [
         defaultExtensions = 'glcore',               # Default extensions for GL core profile (only)
         addExtensions     = glCoreARBPat,
         removeExtensions  = None,
-        prefixText        = prefixStrings + glCorearbPlatformStrings,
+        prefixText        = None, #prefixStrings + glCorearbPlatformStrings,
         genFuncPointers   = False,
         protectFile       = protectFile,
         protectFeature    = protectFeature,
         protectProto      = protectProto,
         protectProtoStr   = 'GL_GLEXT_PROTOTYPES',
         apicall           = 'GLAPI ',
-        apientry          = 'GAPIENTRY ',
-        apientryp         = 'GAPIENTRYP '),
+        apientry          = 'APIENTRY ',
+        apientryp         = 'APIENTRYP '),
     # GLES 1.x API + mandatory extensions - GLES/gl.h (no function pointers)
     CGeneratorOptions(
         filename          = 'GLES/gl.h',
