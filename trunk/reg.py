@@ -525,7 +525,7 @@ class COutputGenerator(OutputGenerator):
             if (elem.tag != 'name'):
                 returnType += text + tail
 
-        if(returnType != 'void '):#proto.text 里面有一个空格，这是一个隐患
+        if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
             #for elem in proto:
             funcWithBody += returnType
             funcWithBody += ' returnValue;\nreturn returnValue;\n'

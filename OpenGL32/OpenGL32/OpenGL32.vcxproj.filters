@@ -41,5 +41,8 @@
     <ClCompile Include="..\..\trunk\GL\opengl32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\trunk\GL\wgl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

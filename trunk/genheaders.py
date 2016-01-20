@@ -628,9 +628,9 @@ else:
             protectFeature    = protectFeature,
             protectProto      = protectProto,
             protectProtoStr   = 'WGL_WGLEXT_PROTOTYPES',
-            apicall           = '',
-            apientry          = 'WINAPI ',
-            apientryp         = 'WINAPI * '),
+            apicall           = 'GLAPI ',
+            apientry          = 'APIENTRY ',
+            apientryp         = 'APIENTRY * '),
             CGeneratorOptions(
             filename          = 'GL/wgl.c',
             apiname           = 'wgl',
@@ -647,8 +647,8 @@ else:
             protectProto      = protectProto,
             protectProtoStr   = 'WGL_WGLEXT_PROTOTYPES',
             apicall           = 'GLAPI ',
-            apientry          = 'WINAPI ',
-            apientryp         = 'WINAPI * '),
+            apientry          = 'APIENTRY ',
+            apientryp         = 'APIENTRY * '),
         # End of list
         None
      ]
