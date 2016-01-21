@@ -53,6 +53,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions> /EXPORT:wglCopyContext /EXPORT:wglCreateContext /EXPORT:wglCreateLayerContext /EXPORT:wglDeleteContext /EXPORT:wglDescribeLayerPlane /EXPORT:wglGetCurrentContext /EXPORT:wglGetCurrentDC /EXPORT:wglGetLayerPaletteEntries /EXPORT:wglGetProcAddress /EXPORT:wglMakeCurrent /EXPORT:wglRealizeLayerPalette /EXPORT:wglSetLayerPaletteEntries /EXPORT:wglShareLists /EXPORT:wglSwapLayerBuffers /EXPORT:wglUseFontBitmapsA /EXPORT:wglUseFontOutlinesA %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
