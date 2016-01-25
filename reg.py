@@ -516,6 +516,11 @@ class COutputGenerator(OutputGenerator):
                     paramdecl += ', '
         else:
             paramdecl += 'void'
+
+        versonInfo = self.featureName
+        versonNum = self.featureName[-3] +"." + self.featureName[-1]
+        versonHeader = self.featureName[0] + "" + self.featureName[1]
+
         # 这个地方可以加一个函数体 proto.text是函数的返回类型
         funcWithBody = pdecl + paramdecl + ")\n{\n"
         returnType = noneStr(proto.text)
@@ -529,6 +534,11 @@ class COutputGenerator(OutputGenerator):
             #for elem in proto:
             funcWithBody += returnType
             funcWithBody += ' returnValue;\nreturn returnValue;\n'
+            if( versonNum == '1.1'):
+                #这个是系统带的函数，要加载系统的Opengl32.dll
+
+            else:
+                #这儿是需要用wglGetProcAddress来获取函数地址的
         funcWithBody += "}\n"
         # 函数体
         paramdecl += ");\n"
