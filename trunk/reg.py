@@ -486,12 +486,14 @@ class COutputGenerator(OutputGenerator):
         tdecl += noneStr(proto.text)
         # For each child element, if it's a <name> wrap in appropriate
         # declaration. Otherwise append its contents and tail contents.
+        functionName = '';
         for elem in proto:
             text = noneStr(elem.text)
             tail = noneStr(elem.tail)
             if (elem.tag == 'name'):
                 pdecl += self.genOpts.apientry + text + tail
                 tdecl += '(' + self.genOpts.apientryp + 'PFN' + text.upper() + 'PROC' + tail + ')'
+                functionName = text;
             else:
                 pdecl += text + tail
                 tdecl += text + tail
@@ -530,15 +532,34 @@ class COutputGenerator(OutputGenerator):
             if (elem.tag != 'name'):
                 returnType += text + tail
 
-        if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
-            #for elem in proto:
-            funcWithBody += returnType
-            funcWithBody += ' returnValue;\nreturn returnValue;\n'
-            if( versonNum == '1.1'):
-                #这个是系统带的函数，要加载系统的Opengl32.dll
 
-            else:
-                #这儿是需要用wglGetProcAddress来获取函数地址的
+        if( versonNum == '1.1'):
+            #这个是系统带的函数，要加载系统的Opengl32.dll
+            #这儿要用LoadLibrary和GetProcAddress来加载系统目录下的Opengl32.dll
+            funcWithBody += 'HINSTANCE hInstLibrary = LoadLibrary("C:\Windows\SysWOW64\opengl32.dll");\n'
+            #该函数的指针
+            funcPointerType = 'PFN' + functionName.upper() + 'PROC'
+            funcWithBody += funcPointerType
+            funcWithBody += ' p = ('
+            funcWithBody += funcPointerType
+            funcWithBody += ') GetProcAddress(hInst,\"'
+            funcWithBody += functionName
+            funcWithBody += '\");\n'
+            funcWithBody += 'if( p != NULL ) {\n'
+            if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
+                #for elem in proto:
+                funcWithBody += 'return '
+
+            funcWithBody += '(*p)('
+            #传入函数的参数
+
+            funcWithBody += ');\n'
+            funcWithBody += '}\n'
+        else:
+            #这儿是需要用系统的wglGetProcAddress函数来获取函数地址的
+            funcWithBody += ''
+
+            #当前DLL的wglGetProcAddress函数要返回当前DLL中对应的函数地址，可以用GetProcAddress来做，其中Handle在DLLMain中记录
         funcWithBody += "}\n"
         # 函数体
         paramdecl += ");\n"
