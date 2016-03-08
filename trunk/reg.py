@@ -532,7 +532,7 @@ class COutputGenerator(OutputGenerator):
             if (elem.tag != 'name'):
                 returnType += text + tail
 
-
+                funcWithBody += 'LPFNREGISTER pointer = '
         if( versonNum == '1.1'):
             #这个是系统带的函数，要加载系统的Opengl32.dll
             #这儿要用LoadLibrary和GetProcAddress来加载系统目录下的Opengl32.dll
