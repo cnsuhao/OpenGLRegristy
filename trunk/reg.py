@@ -503,6 +503,9 @@ class COutputGenerator(OutputGenerator):
         # since all tags are ignored.
         n = len(params)
         paramdecl = ' ('
+
+        paramNameList = []
+
         if n > 0:
             for i in range(0,n):#这儿表示一共有n个参数
                 paramdecl += ''.join([t for t in params[i].itertext()]) #防止参数与关键字重复
@@ -514,6 +517,9 @@ class COutputGenerator(OutputGenerator):
                 #        paramdecl += ' ' + t + '_'
                 #    j += 1
                 paramdecl += '_'
+                testType = params[i]
+                curParamName = params[i][-1]
+                paramNameList.append(curParamName)
                 if (i < n - 1):
                     paramdecl += ', '
         else:
@@ -532,26 +538,32 @@ class COutputGenerator(OutputGenerator):
             if (elem.tag != 'name'):
                 returnType += text + tail
 
-                funcWithBody += 'LPFNREGISTER pointer = '
+                #funcWithBody += 'LPFNREGISTER pointer = '
+        #这儿需要定义函数指针
+        funcPointer = returnType + '(*FUNC)' + paramdecl + ')'
+
+        #返回值(*f)()
         if( versonNum == '1.1'):
             #这个是系统带的函数，要加载系统的Opengl32.dll
             #这儿要用LoadLibrary和GetProcAddress来加载系统目录下的Opengl32.dll
             funcWithBody += 'HINSTANCE hInstLibrary = LoadLibrary("C:\Windows\SysWOW64\opengl32.dll");\n'
             #该函数的指针
-            funcPointerType = 'PFN' + functionName.upper() + 'PROC'
-            funcWithBody += funcPointerType
-            funcWithBody += ' p = ('
-            funcWithBody += funcPointerType
-            funcWithBody += ') GetProcAddress(hInst,\"'
+            funcWithBody += 'typedef ' + funcPointer + ';\n'
+            funcWithBody += 'FUNC fun = (FUNC) ('
+            #funcPointerType = 'PFN' + functionName.upper() + 'PROC'
+            #fun#cWithBody += funcPointerType
+            #funcWithBody += ' p = ('
+            #funcWithBody += funcPointerType
+            funcWithBody += ' GetProcAddress(hInst,\"'
             funcWithBody += functionName
-            funcWithBody += '\");\n'
+            funcWithBody += '\"));\n'
             funcWithBody += 'if( p != NULL ) {\n'
             if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
                 #for elem in proto:
                 funcWithBody += 'return '
 
-            funcWithBody += '(*p)('
-            #传入函数的参数
+            funcWithBody += '(*fun)('
+            #传入函数的参数 这儿得把参数名字提取出来
 
             funcWithBody += ');\n'
             funcWithBody += '}\n'
@@ -560,7 +572,7 @@ class COutputGenerator(OutputGenerator):
             funcWithBody += ''
 
             #当前DLL的wglGetProcAddress函数要返回当前DLL中对应的函数地址，可以用GetProcAddress来做，其中Handle在DLLMain中记录
-        funcWithBody += "}\n"
+        funcWithBody += "\n}\n"
         # 函数体
         paramdecl += ");\n"
         return [ pdecl + paramdecl, tdecl + paramdecl , funcWithBody]

@@ -2,8 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "Open."GL32.h"
+#include "OpenGL32.h"
 
+typedef int (*f)(int a, int b);
 
 // This is an example of an exported variable
 OPENGL32_API int nOpenGL32=0;
@@ -11,6 +12,8 @@ OPENGL32_API int nOpenGL32=0;
 // This is an example of an exported function.
 OPENGL32_API int fnOpenGL32(void)
 {
+	int * p;
+	f f1 = (f)(p);
 	return 42;
 }
 
@@ -18,5 +21,4 @@ OPENGL32_API int fnOpenGL32(void)
 // see OpenGL32.h for the class definition
 COpenGL32::COpenGL32()
 {
-	return;
 }
