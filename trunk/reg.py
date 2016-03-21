@@ -517,9 +517,12 @@ class COutputGenerator(OutputGenerator):
                 #        paramdecl += ' ' + t + '_'
                 #    j += 1
                 paramdecl += '_'
-                testType = params[i]
-                curParamName = params[i][-1]
-                paramNameList.append(curParamName)
+                tmpList = paramdecl.split(" ")
+                #testType = params[i]
+                #curParamName = params[i][-1]
+                tmpStr = tmpList[-1]
+                newStr = tmpStr.replace("*", "")#把指针前面的*去掉
+                paramNameList.append(newStr)
                 if (i < n - 1):
                     paramdecl += ', '
         else:
@@ -564,7 +567,9 @@ class COutputGenerator(OutputGenerator):
 
             funcWithBody += '(*fun)('
             #传入函数的参数 这儿得把参数名字提取出来
-
+            #for elem in paramNameList:
+            #    funcWithBody += elem
+            funcWithBody += ','.join(paramNameList)#用逗号把paramNameList里面的内容连接起来
             funcWithBody += ');\n'
             funcWithBody += '}\n'
         else:
