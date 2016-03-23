@@ -545,13 +545,15 @@ class COutputGenerator(OutputGenerator):
         #这儿需要定义函数指针
         funcPointer = returnType + '(*FUNC)' + paramdecl + ')'
 
+        typeDefStr = 'typedef ' + funcPointer + ';\n'
+
         #返回值(*f)()
-        if( versonNum == '1.1'):
+        if( versonNum == '1.0'):
             #这个是系统带的函数，要加载系统的Opengl32.dll
             #这儿要用LoadLibrary和GetProcAddress来加载系统目录下的Opengl32.dll
             funcWithBody += 'HINSTANCE hInstLibrary = LoadLibrary("C:\Windows\SysWOW64\opengl32.dll");\n'
             #该函数的指针
-            funcWithBody += 'typedef ' + funcPointer + ';\n'
+            funcWithBody += typeDefStr
             funcWithBody += 'FUNC fun = (FUNC) ('
             #funcPointerType = 'PFN' + functionName.upper() + 'PROC'
             #fun#cWithBody += funcPointerType
@@ -560,23 +562,32 @@ class COutputGenerator(OutputGenerator):
             funcWithBody += ' GetProcAddress(hInst,\"'
             funcWithBody += functionName
             funcWithBody += '\"));\n'
-            funcWithBody += 'if( p != NULL ) {\n'
-            if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
-                #for elem in proto:
-                funcWithBody += 'return '
-
-            funcWithBody += '(*fun)('
-            #传入函数的参数 这儿得把参数名字提取出来
-            #for elem in paramNameList:
-            #    funcWithBody += elem
-            funcWithBody += ','.join(paramNameList)#用逗号把paramNameList里面的内容连接起来
-            funcWithBody += ');\n'
-            funcWithBody += '}\n'
+            #funcWithBody += 'if( p != NULL ) {\n'
+            #if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
+            #    #for elem in proto:
+            #    funcWithBody += 'return '
+#
+            #funcWithBody += '(*fun)('
+            ##传入函数的参数 这儿得把参数名字提取出来
+            ##for elem in paramNameList:
+            ##    funcWithBody += elem
+            #funcWithBody += ','.join(paramNameList)#用逗号把paramNameList里面的内容连接起来
+            #funcWithBody += ');\n'#
+            #funcWithBody += '}\n'
         else:
             #这儿是需要用系统的wglGetProcAddress函数来获取函数地址的
-            funcWithBody += ''
+            funcWithBody += typeDefStr
+            funcWithBody += 'FUNC fun = (FUNC)(wglGetProcAddress((LPCSTR)(const GLubyte*)"' + functionName + '"));\n'
 
-            #当前DLL的wglGetProcAddress函数要返回当前DLL中对应的函数地址，可以用GetProcAddress来做，其中Handle在DLLMain中记录
+        #当前DLL的wglGetProcAddress函数要返回当前DLL中对应的函数地址，可以用GetProcAddress来做，其中Handle在DLLMain中记录
+        funcCallStr = '(*fun)(' + ','.join(paramNameList) + ');\n'#用逗号把paramNameList里面的内容连接起来
+        if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
+            funcWithBody +=  returnType + 'returnValue = ' + funcCallStr
+            funcWithBody += 'return returnValue;'
+        else:
+            funcWithBody += funcCallStr
+        if(functionName != 'glGetError'):
+            funcWithBody += 'GLenum errorCode = glGetError();\n'
         funcWithBody += "\n}\n"
         # 函数体
         paramdecl += ");\n"
