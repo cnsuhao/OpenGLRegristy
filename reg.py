@@ -583,11 +583,13 @@ class COutputGenerator(OutputGenerator):
         funcCallStr = '(*fun)(' + ','.join(paramNameList) + ');\n'#用逗号把paramNameList里面的内容连接起来
         if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
             funcWithBody +=  returnType + 'returnValue = ' + funcCallStr
+            if(functionName != 'glGetError'):
+                funcWithBody += 'GLenum errorCode = glGetError();\n'
             funcWithBody += 'return returnValue;'
         else:
             funcWithBody += funcCallStr
-        if(functionName != 'glGetError'):
-            funcWithBody += 'GLenum errorCode = glGetError();\n'
+            if(functionName != 'glGetError'):
+                funcWithBody += 'GLenum errorCode = glGetError();\n'
         funcWithBody += "\n}\n"
         # 函数体
         paramdecl += ");\n"
