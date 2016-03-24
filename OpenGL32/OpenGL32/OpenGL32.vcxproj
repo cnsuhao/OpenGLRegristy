@@ -77,6 +77,8 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\trunk\GL\glcorearb.h" />
+    <ClInclude Include="..\..\trunk\GL\wgl.h" />
     <ClInclude Include="OpenGL32.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
