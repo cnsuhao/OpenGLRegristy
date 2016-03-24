@@ -1,5 +1,5 @@
-#ifndef __eglext_h_
-#define __eglext_h_ 1
+#ifndef __wglext_h_
+#define __wglext_h_ 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,15 +36,18 @@ extern "C" {
 ** Khronos $Revision$ on $Date$
 */
 
-#include <EGL/eglplatform.h>
+#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+#define WIN32_LEAN_AND_MEAN 1
+#include <windows.h>
+#endif
 
-#define EGL_EGLEXT_VERSION 20160324
+#define WGL_WGLEXT_VERSION 20160324
 
 /* Generated C header for:
- * API: egl
+ * API: wgl
  * Versions considered: .*
  * Versions emitted: _nomatch_^
- * Default extensions included: egl
+ * Default extensions included: wgl
  * Additional extensions included: _nomatch_^
  * Extensions removed: _nomatch_^
  */

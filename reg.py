@@ -522,6 +522,7 @@ class COutputGenerator(OutputGenerator):
                 #curParamName = params[i][-1]
                 tmpStr = tmpList[-1]
                 newStr = tmpStr.replace("*", "")#把指针前面的*去掉
+                newStr = newStr.replace("const", "")#把指针前面的*去掉
                 paramNameList.append(newStr)
                 if (i < n - 1):
                     paramdecl += ', '
@@ -551,7 +552,7 @@ class COutputGenerator(OutputGenerator):
         if( versonNum == '1.0'):
             #这个是系统带的函数，要加载系统的Opengl32.dll
             #这儿要用LoadLibrary和GetProcAddress来加载系统目录下的Opengl32.dll
-            funcWithBody += 'HINSTANCE hInstLibrary = LoadLibrary("C:\Windows\SysWOW64\opengl32.dll");\n'
+            funcWithBody += 'HINSTANCE hInst = LoadLibrary(L"C:/Windows/SysWOW64/opengl32.dll");\n'
             #该函数的指针
             funcWithBody += typeDefStr
             funcWithBody += 'FUNC fun = (FUNC) ('
@@ -583,13 +584,13 @@ class COutputGenerator(OutputGenerator):
         funcCallStr = '(*fun)(' + ','.join(paramNameList) + ');\n'#用逗号把paramNameList里面的内容连接起来
         if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
             funcWithBody +=  returnType + 'returnValue = ' + funcCallStr
-            if(functionName != 'glGetError'):
-                funcWithBody += 'GLenum errorCode = glGetError();\n'
+            #if(functionName != 'glGetError'):
+            #    funcWithBody += 'GLenum errorCode = glGetError();\n'
             funcWithBody += 'return returnValue;'
         else:
             funcWithBody += funcCallStr
-            if(functionName != 'glGetError'):
-                funcWithBody += 'GLenum errorCode = glGetError();\n'
+            #if(functionName != 'glGetError'):
+            #    funcWithBody += 'GLenum errorCode = glGetError();\n'
         funcWithBody += "\n}\n"
         # 函数体
         paramdecl += ");\n"

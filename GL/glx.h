@@ -1,5 +1,5 @@
-#ifndef __eglext_h_
-#define __eglext_h_ 1
+#ifndef __glx_h_
+#define __glx_h_ 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,15 +36,13 @@ extern "C" {
 ** Khronos $Revision$ on $Date$
 */
 
-#include <EGL/eglplatform.h>
-
-#define EGL_EGLEXT_VERSION 20160324
+/* Generated on date 20160324 */
 
 /* Generated C header for:
- * API: egl
+ * API: glx
  * Versions considered: .*
- * Versions emitted: _nomatch_^
- * Default extensions included: egl
+ * Versions emitted: .*
+ * Default extensions included: None
  * Additional extensions included: _nomatch_^
  * Extensions removed: _nomatch_^
  */
