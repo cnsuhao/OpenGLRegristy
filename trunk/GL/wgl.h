@@ -1,6 +1,6 @@
 #ifndef __wgl_h_
 #define __wgl_h_ 1
-
+#include "glcorearb.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,8 +41,7 @@ extern "C" {
 #include <windows.h>
 #endif
 
-#include <windows.h>
-/* Generated on date 20160324 */
+/* Generated on date 20160325 */
 
 /* Generated C header for:
  * API: wgl
@@ -53,7 +52,6 @@ extern "C" {
  * Extensions removed: _nomatch_^
  */
 
-#define APIENTRY 
 #ifndef WGL_VERSION_1_0
 #define WGL_VERSION_1_0 1
 #define WGL_FONT_LINES                    0

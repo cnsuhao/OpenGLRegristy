@@ -671,8 +671,6 @@ class COutputGenerator(OutputGenerator):
                     write('#ifdef', self.featureName, file=self.outFile)
                 write(self.functionBody, end='', file=self.outFile)
             elif(self.outFile.name[-1] == 'f'):
-                if (self.genOpts.protectFeature):
-                    write('#ifdef', self.featureName, file=self.outFile)
                 write(self.functionName, end='', file=self.outFile)
             else:
 
@@ -703,7 +701,7 @@ class COutputGenerator(OutputGenerator):
                         write('#endif', file=self.outFile)
                 if (self.featureExtraProtect != None):
                     write('#endif /*', self.featureExtraProtect, '*/', file=self.outFile)
-            if (self.genOpts.protectFeature):
+            if (self.genOpts.protectFeature and self.outFile.name[-1] != 'f'):
                 write('#endif /*', self.featureName, '*/', file=self.outFile)
         # Finish processing in superclass
         OutputGenerator.endFeature(self)

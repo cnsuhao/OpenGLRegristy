@@ -1,6 +1,6 @@
 #ifndef __glcorearb_h_
 #define __glcorearb_h_ 1
-
+#define INTER_CALL _stdcall 
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -36,12 +36,12 @@ extern "C" {
 ** Khronos $Revision$ on $Date$
 */
 
-//#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN 1
-//#endif
-//#include <windows.h>
-//#endif
+#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif
+#include <windows.h>
+#endif
 
 #ifndef APIENTRY
 #define APIENTRY
