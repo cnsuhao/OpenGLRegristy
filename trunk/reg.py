@@ -462,6 +462,7 @@ class COutputGenerator(OutputGenerator):
         self.enumBody = ''
         self.cmdBody = ''
         self.functionBody = ''
+        self.functionName = ''
     #
     # makeCDecls - return C prototype and function pointer typedef for a
     #   command, as a two-element list of strings.
@@ -544,7 +545,7 @@ class COutputGenerator(OutputGenerator):
 
                 #funcWithBody += 'LPFNREGISTER pointer = '
         #这儿需要定义函数指针
-        funcPointer = returnType + '(*FUNC)' + paramdecl + ')'
+        funcPointer = returnType + '(INTER_CALL *FUNC)' + paramdecl + ')'#程序里面需要定义INTER_CALL为__stdcall
 
         typeDefStr = 'typedef ' + funcPointer + ';\n'
 
@@ -594,7 +595,7 @@ class COutputGenerator(OutputGenerator):
         funcWithBody += "\n}\n"
         # 函数体
         paramdecl += ");\n"
-        return [ pdecl + paramdecl, tdecl + paramdecl , funcWithBody]
+        return [ pdecl + paramdecl, tdecl + paramdecl , funcWithBody, functionName + '\n']
     #
     def newline(self):
         write('', file=self.outFile)
@@ -669,6 +670,10 @@ class COutputGenerator(OutputGenerator):
                 if (self.genOpts.protectFeature):
                     write('#ifdef', self.featureName, file=self.outFile)
                 write(self.functionBody, end='', file=self.outFile)
+            elif(self.outFile.name[-1] == 'f'):
+                if (self.genOpts.protectFeature):
+                    write('#ifdef', self.featureName, file=self.outFile)
+                write(self.functionName, end='', file=self.outFile)
             else:
 
                 #下面这组是写 #ifndef GL_VERSION_1_2 #define GL_VERSION_1_2 1
@@ -742,6 +747,7 @@ class COutputGenerator(OutputGenerator):
         if (self.genOpts.genFuncPointers):
             self.cmdPointerBody += decls[1]
         self.functionBody += decls[2]
+        self.functionName += decls[3]
 
 # Registry - object representing an API registry, loaded from an XML file
 # Members
