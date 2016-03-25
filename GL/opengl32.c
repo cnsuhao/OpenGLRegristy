@@ -1,7 +1,5 @@
 #ifndef __opengl32_c_
 #define __opengl32_c_ 1
-#include <Windows.h>
-#include <tchar.h>
 #include "glcorearb.h"
 #ifdef __cplusplus
 extern "C" {
@@ -17,10 +15,7 @@ extern "C" {
  * Extensions removed: _nomatch_^
  */
 
-#define GLAPI _declspec(dllexport)
-
-#define APIENTRY __stdcall
-#define INTER_CALL __stdcall
+#define APIENTRY _stdcall 
 #ifdef GL_VERSION_1_0
 GLAPI void APIENTRY glCullFace (GLenum mode_)
 {
@@ -336,10 +331,14 @@ FUNC fun = (FUNC) ( GetProcAddress(hInst,"glGetIntegerv"));
 }
 GLAPI const GLubyte *APIENTRY glGetString (GLenum name_)
 {
+int errorCode = GetLastError();
 HINSTANCE hInst = LoadLibrary(L"C:/Windows/SysWOW64/opengl32.dll");
+int errorCode1 = GetLastError();
 typedef const GLubyte *(INTER_CALL *FUNC) (GLenum name_);
 FUNC fun = (FUNC) ( GetProcAddress(hInst,"glGetString"));
+int errorCode2 = GetLastError();
 const GLubyte *returnValue = (*fun)(name_);
+errorCode = GetLastError();
 return returnValue;
 }
 GLAPI void APIENTRY glGetTexImage (GLenum target_, GLint level_, GLenum format_, GLenum type_, void *pixels_)
