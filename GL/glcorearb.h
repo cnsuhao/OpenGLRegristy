@@ -76,7 +76,7 @@ extern "C" {
  * Additional extensions included: _nomatch_^
  * Extensions removed: _nomatch_^
  */
-
+extern HINSTANCE GetDLLInstance();
 #ifndef GL_VERSION_1_0
 #define GL_VERSION_1_0 1
 typedef void GLvoid;
