@@ -1,6 +1,6 @@
 #ifndef __glcorearb_h_
 #define __glcorearb_h_ 1
-#define INTER_CALL _stdcall 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -76,7 +76,11 @@ extern "C" {
  * Additional extensions included: _nomatch_^
  * Extensions removed: _nomatch_^
  */
-extern HINSTANCE GetDLLInstance();
+
+#define INTER_CALL _stdcall 
+    extern HINSTANCE GetDLLInstance();
+    extern void AfterProcess();
+
 #ifndef GL_VERSION_1_0
 #define GL_VERSION_1_0 1
 typedef void GLvoid;
