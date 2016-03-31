@@ -469,29 +469,29 @@
     <!-- SECTION: WGL command definitions. -->
     <commands namespace="WGL">
         <command>
-            <proto>int <name>ChoosePixelFormat</name></proto>
+            <proto>int <name>wglChoosePixelFormat</name></proto>
             <param><ptype>HDC</ptype> <name>hDc</name></param>
             <param>const <ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>pPfd</name></param>
         </command>
         <command>
-            <proto>int <name>DescribePixelFormat</name></proto>
+            <proto>int <name>wglDescribePixelFormat</name></proto>
             <param><ptype>HDC</ptype> <name>hdc</name></param>
             <param>int <name>ipfd</name></param>
             <param><ptype>UINT</ptype> <name>cjpfd</name></param>
             <param>const <ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>ppfd</name></param>
         </command>
         <command>
-            <proto>int <name>GetPixelFormat</name></proto>
+            <proto>int <name>wglGetPixelFormat</name></proto>
             <param><ptype>HDC</ptype> <name>hdc</name></param>
         </command>
         <command>
-            <proto><ptype>BOOL</ptype> <name>SetPixelFormat</name></proto>
+            <proto><ptype>BOOL</ptype> <name>wglSetPixelFormat</name></proto>
             <param><ptype>HDC</ptype> <name>hdc</name></param>
             <param>int <name>ipfd</name></param>
             <param>const <ptype>PIXELFORMATDESCRIPTOR</ptype> *<name>ppfd</name></param>
         </command>
         <command>
-            <proto><ptype>BOOL</ptype> <name>SwapBuffers</name></proto>
+            <proto><ptype>BOOL</ptype> <name>wglSwapBuffers</name></proto>
             <param><ptype>HDC</ptype> <name>hdc</name></param>
         </command>
         <command>

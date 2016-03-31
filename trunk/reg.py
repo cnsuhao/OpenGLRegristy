@@ -553,7 +553,7 @@ class COutputGenerator(OutputGenerator):
         if( versonNum == '1.0'):
             #这个是系统带的函数，要加载系统的Opengl32.dll
             #这儿要用LoadLibrary和GetProcAddress来加载系统目录下的Opengl32.dll
-            funcWithBody += 'HINSTANCE hInst = LoadLibrary(L"C:/Windows/SysWOW64/opengl32.dll");\n'
+            funcWithBody += 'HINSTANCE hInst = GetDLLInstance();\n'
             #该函数的指针
             funcWithBody += typeDefStr
             funcWithBody += 'FUNC fun = (FUNC) ('
@@ -583,15 +583,16 @@ class COutputGenerator(OutputGenerator):
 
         #当前DLL的wglGetProcAddress函数要返回当前DLL中对应的函数地址，可以用GetProcAddress来做，其中Handle在DLLMain中记录
         funcCallStr = '(*fun)(' + ','.join(paramNameList) + ');\n'#用逗号把paramNameList里面的内容连接起来
+        afterProcessStr = 'AfterProcess("'+functionName+'");\n'
         if(returnType !='void ' and returnType !='VOID ' and returnType !='void' and returnType !='VOID'):#proto.text 里面有一个空格，这是一个隐患
             funcWithBody +=  returnType + 'returnValue = ' + funcCallStr
             #if(functionName != 'glGetError'):
-            #    funcWithBody += 'GLenum errorCode = glGetError();\n'
+            funcWithBody += afterProcessStr
             funcWithBody += 'return returnValue;'
         else:
             funcWithBody += funcCallStr
             #if(functionName != 'glGetError'):
-            #    funcWithBody += 'GLenum errorCode = glGetError();\n'
+            funcWithBody += afterProcessStr
         funcWithBody += "\n}\n"
         # 函数体
         paramdecl += ");\n"

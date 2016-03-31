@@ -41,7 +41,7 @@ extern "C" {
 #include <windows.h>
 #endif
 
-/* Generated on date 20160325 */
+/* Generated on date 20160331 */
 
 /* Generated C header for:
  * API: wgl
@@ -87,6 +87,11 @@ extern "C" {
 #define WGL_SWAP_UNDERLAY13               0x10000000
 #define WGL_SWAP_UNDERLAY14               0x20000000
 #define WGL_SWAP_UNDERLAY15               0x40000000
+typedef int (APIENTRY * PFNWGLCHOOSEPIXELFORMATPROC) (HDC hDc_, const PIXELFORMATDESCRIPTOR *pPfd_);
+typedef int (APIENTRY * PFNWGLDESCRIBEPIXELFORMATPROC) (HDC hdc_, int ipfd_, UINT cjpfd_, const PIXELFORMATDESCRIPTOR *ppfd_);
+typedef int (APIENTRY * PFNWGLGETPIXELFORMATPROC) (HDC hdc_);
+typedef BOOL (APIENTRY * PFNWGLSETPIXELFORMATPROC) (HDC hdc_, int ipfd_, const PIXELFORMATDESCRIPTOR *ppfd_);
+typedef BOOL (APIENTRY * PFNWGLSWAPBUFFERSPROC) (HDC hdc_);
 typedef BOOL (APIENTRY * PFNWGLCOPYCONTEXTPROC) (HGLRC hglrcSrc_, HGLRC hglrcDst_, UINT mask_);
 typedef HGLRC (APIENTRY * PFNWGLCREATECONTEXTPROC) (HDC hDc_);
 typedef HGLRC (APIENTRY * PFNWGLCREATELAYERCONTEXTPROC) (HDC hDc_, int level_);
@@ -108,6 +113,11 @@ typedef BOOL (APIENTRY * PFNWGLUSEFONTOUTLINESPROC) (HDC hDC_, DWORD first_, DWO
 typedef BOOL (APIENTRY * PFNWGLUSEFONTOUTLINESAPROC) (HDC hDC_, DWORD first_, DWORD count_, DWORD listBase_, FLOAT deviation_, FLOAT extrusion_, int format_, LPGLYPHMETRICSFLOAT lpgmf_);
 typedef BOOL (APIENTRY * PFNWGLUSEFONTOUTLINESWPROC) (HDC hDC_, DWORD first_, DWORD count_, DWORD listBase_, FLOAT deviation_, FLOAT extrusion_, int format_, LPGLYPHMETRICSFLOAT lpgmf_);
 #ifdef WGL_WGLEXT_PROTOTYPES
+GLAPI int APIENTRY wglChoosePixelFormat (HDC hDc_, const PIXELFORMATDESCRIPTOR *pPfd_);
+GLAPI int APIENTRY wglDescribePixelFormat (HDC hdc_, int ipfd_, UINT cjpfd_, const PIXELFORMATDESCRIPTOR *ppfd_);
+GLAPI int APIENTRY wglGetPixelFormat (HDC hdc_);
+GLAPI BOOL APIENTRY wglSetPixelFormat (HDC hdc_, int ipfd_, const PIXELFORMATDESCRIPTOR *ppfd_);
+GLAPI BOOL APIENTRY wglSwapBuffers (HDC hdc_);
 GLAPI BOOL APIENTRY wglCopyContext (HGLRC hglrcSrc_, HGLRC hglrcDst_, UINT mask_);
 GLAPI HGLRC APIENTRY wglCreateContext (HDC hDc_);
 GLAPI HGLRC APIENTRY wglCreateLayerContext (HDC hDc_, int level_);
